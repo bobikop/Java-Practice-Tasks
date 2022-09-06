@@ -1,4 +1,4 @@
-package InterviewTasks.arrays;
+package Arrays;
 
 public class Array_LargestSumContiguousSubarray {
     public static void main(String[] args) {

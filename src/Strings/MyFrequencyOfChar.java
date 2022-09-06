@@ -1,4 +1,4 @@
-package InterviewTasks.arrays;
+package Strings;
 
 public class MyFrequencyOfChar {
     public static void main(String[] args) {

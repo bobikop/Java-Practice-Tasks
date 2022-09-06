@@ -1,6 +1,4 @@
-package Mani;
-
-import java.util.Arrays;
+package Strings;
 
 public class StringReverse2 {
     public static void main(String[] args){

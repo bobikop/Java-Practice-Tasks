@@ -1,4 +1,4 @@
-package Self_PracticingReplitTasks.replit6Array;
+package Arrays;
 
 import java.util.Arrays;
 

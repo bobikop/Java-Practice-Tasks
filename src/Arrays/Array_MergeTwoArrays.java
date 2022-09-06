@@ -1,6 +1,5 @@
-package InterviewTasks.arrays;
+package Arrays;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 
 public class Array_MergeTwoArrays {

@@ -1,4 +1,4 @@
-package InterviewTasks.arrays;
+package Strings;
 
 public class BiggestSubstring {
     public static void main(String[] args) {

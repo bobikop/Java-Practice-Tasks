@@ -1,4 +1,4 @@
-package InterviewTasks.arrays;
+package Strings;
 
 import java.util.*;
 

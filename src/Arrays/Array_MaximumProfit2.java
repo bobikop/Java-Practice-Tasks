@@ -1,4 +1,4 @@
-package InterviewTasks.arrays;
+package Arrays;
 
 public class Array_MaximumProfit2 {
     public static void main(String[] args) {

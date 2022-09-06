@@ -1,7 +1,4 @@
-package InterviewTasks.arrays;
-
-import java.sql.Array;
-import java.util.Arrays;
+package Arrays;
 
 public class Array_FirstUniqueElement {
 

@@ -1,6 +1,4 @@
-package InterviewTasks.arrays;
-
-import org.w3c.dom.ls.LSOutput;
+package Arrays;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

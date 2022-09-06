@@ -1,4 +1,4 @@
-package Self_PracticingReplitTasks.replit1;
+package Strings;
 
 public class MiddleCharacter {
     public static void main(String[] args) {

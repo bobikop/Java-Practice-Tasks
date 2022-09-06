@@ -1,4 +1,4 @@
-package Mani;
+package Strings;
 
 public class StringReverse4 {
     public static void main(String[] args) {
