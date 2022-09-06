@@ -23,4 +23,7 @@ public class FirstRepeatingCharacter {
         //if add ops is false return that char
         return null;
     }
+
+
+
 }
