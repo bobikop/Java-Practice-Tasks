@@ -34,21 +34,28 @@ public class IntersectionOfTwoArrays {
 
 
     public static int[] intersection(int[] nums1, int[] nums2){
-
+        // first create new set since is not supporting duplicates
         Set<Integer> set = new HashSet<>();
+        // second sort one of arrays
         Arrays.sort(nums2);
-        for(Integer num : nums1){
-            if (binarySearchIterative(nums2, num)){
+
+        // third check if any of element from one array is also in another array and if it is add it to the set (use bninary search method)
+        for (Integer num : nums1){
+            if(binarySearchIterative(nums2, num)){
                 set.add(num);
             }
         }
+
+
+
         int i = 0;
+        // since we need to return new array with common elements that new array will be set size since all the common elements are added in to the set
         int[] result = new int[set.size()];
+        // iterate over set with for loop and add each element to the new result array
         for (Integer num : set){
             result[i++] = num;
         }
-
-
+        // finally return result array
         return result;
     }
 
