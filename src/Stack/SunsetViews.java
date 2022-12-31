@@ -43,15 +43,14 @@ public class SunsetViews {
     // east direction
     public static ArrayList<Integer> sunsetViewsEast(int[] buildings, String direction){
 
-        Stack<Integer> stack = new Stack<>();
+         Stack<Integer> stack = new Stack<>();
 
-        for(int i=0; i < buildings.length; i++){
+        for (int i = 0; i < buildings.length; i++) {
             while(!stack.isEmpty() && buildings[i] >= buildings[stack.peek()]){
                 stack.pop();
             }
             stack.push(i);
         }
-
         return new ArrayList<Integer>(stack);
 
     }
