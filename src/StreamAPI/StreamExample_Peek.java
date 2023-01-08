@@ -6,11 +6,9 @@ import java.util.stream.Stream;
 
 public class StreamExample_Peek {
 
+
+
     public static void main(String[] args) {
-
-
-
-
 
         List<String> roles = Stream.of("Admin", "Manager", "Employee")
                 .filter(obj -> obj.equals("Admin"))
