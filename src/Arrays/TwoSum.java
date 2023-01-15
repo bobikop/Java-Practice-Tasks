@@ -8,7 +8,9 @@ public class TwoSum {
 
     public static void main(String[] args) {
         int[] numbers = {2,4,6,8,3,9};
-        System.out.println("twoSum(numbers, 6) = " + twoSum(numbers, 6));
+        System.out.println(Arrays.toString(twoSum(numbers, 8)));
+        System.out.println(Arrays.toString(findThePairNumbers(numbers,8)));
+        System.out.println(Arrays.toString(findIndicesWithTwoPointerAndHashMap(numbers,8)));
     }
 
     public static int[] twoSum(int[] nums, int target) {
