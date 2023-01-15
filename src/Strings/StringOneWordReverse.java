@@ -1,5 +1,7 @@
 package Strings;
 
+import java.util.function.Predicate;
+
 public class StringOneWordReverse {
 
     public static void main(String[] args) {
@@ -16,6 +18,8 @@ public class StringOneWordReverse {
         System.out.println(reverse);
     }
 
+
+//    Predicate<Integer> odd = i -> i%2 != 0;
 
 }
 
