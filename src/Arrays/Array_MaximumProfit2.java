@@ -18,6 +18,8 @@ Write a Java function to find the maximum profit.
         int[] arr = {8, 3, 3, 1, 4, 9, 12, 11};
 
         //first step we say what is our minimum and what maximum profit
+        //NOT OPTIMIZED SOLUTION
+
 
 
         int min = arr[0];
