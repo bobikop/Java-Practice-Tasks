@@ -1,6 +1,6 @@
 package Arrays;
 
-public class Array_MaximumProfit {
+public class Array_MaximumProfit_LeetCode {
       /*
 We are given an array of prices for a given stock. ith  element of this array represents the price of the stock on  day i.
 We are only permitted to complete only one transaction(buy one or sell one share of the stock) per day.

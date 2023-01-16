@@ -1,6 +1,6 @@
 package Arrays;
 
-public class Array_MaximumProfit2 {
+public class Array_MaximumProfit_BrutForceSolution {
     public static void main(String[] args) {
         /*
 We are given an array of prices for a given stock. ith  element of this array represents the price of the stock on  day i.
