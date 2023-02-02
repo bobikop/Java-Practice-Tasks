@@ -8,7 +8,7 @@ public class Multithreading {
         for (int i = 0; i < 5 ; i++) {
             MyMultithread myThing = new MyMultithread(i);
 
-            myThing.start();
+            myThing.start(); // use start method instead run
         }
 
 
