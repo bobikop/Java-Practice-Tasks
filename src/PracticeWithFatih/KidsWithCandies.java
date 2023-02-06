@@ -2,7 +2,7 @@ package PracticeWithFatih;
 
 public class KidsWithCandies {
 
-    public List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
+    public static List<Boolean> kidsWithCandies(int[] candies, int extraCandies) {
         int max = candies[0]; // in order to find which kid have a max number of candies will declare kid 1 as a max for coparation in loop
         for (int i = 0; i < candies.length; i++) {
             if (candies[i] > max) {
@@ -19,6 +19,11 @@ public class KidsWithCandies {
             }
         }
         return list;
+    }
+
+    public static void main(String[] args) {
+        int [] candies = {2,3,5,1,3};
+        System.out.println(Array.to);
     }
 
 }
