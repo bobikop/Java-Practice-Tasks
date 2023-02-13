@@ -46,8 +46,6 @@ public class IntersectionOfTwoArrays {
             }
         }
 
-
-
         int i = 0;
         // since we need to return new array with common elements that new array will be set size since all the common elements are added in to the set
         int[] result = new int[set.size()];

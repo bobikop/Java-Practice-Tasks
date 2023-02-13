@@ -1,4 +1,7 @@
-package PracticeWithFatih;
+package PracticeWithFatih.session1.KidsWithCandies;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class KidsWithCandies {
 
@@ -23,7 +26,7 @@ public class KidsWithCandies {
 
     public static void main(String[] args) {
         int [] candies = {2,3,5,1,3};
-        System.out.println(Array.to);
+        System.out.println(kidsWithCandies(candies,3));
     }
 
 }
