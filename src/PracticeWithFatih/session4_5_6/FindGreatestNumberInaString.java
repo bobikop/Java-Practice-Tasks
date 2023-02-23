@@ -1,4 +1,4 @@
-package PracticeWithFatih.session4;
+package PracticeWithFatih.session4_5_6;
 
 public class FindGreatestNumberInaString {
     public static void main(String[] args) {

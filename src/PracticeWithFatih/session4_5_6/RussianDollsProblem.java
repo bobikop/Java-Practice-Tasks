@@ -1,4 +1,4 @@
-package PracticeWithFatih.session4;
+package PracticeWithFatih.session4_5_6;
 
 import java.io.BufferedReader;
 import java.io.IOException;

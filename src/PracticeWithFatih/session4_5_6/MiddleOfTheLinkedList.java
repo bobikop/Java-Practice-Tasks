@@ -1,8 +1,4 @@
-package PracticeWithFatih.session4;
-
-import PracticeWithFatih.session3.phonrbook2.PhoneBook;
-
-import java.util.LinkedList;
+package PracticeWithFatih.session4_5_6;
 
 public class MiddleOfTheLinkedList {
 
