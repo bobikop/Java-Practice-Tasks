@@ -1,5 +1,8 @@
 package NumberTasks;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class HappyNumber {
 
 
@@ -33,39 +36,41 @@ public class HappyNumber {
 //            1 <= n <= 231 - 1
 
     public static void main(String[] args) {
-
-
-
+        int n = 19;
+        System.out.println(happyNumber(n));
+        System.out.println(isHappy2(n));
     }
 
+    //solution 1
+
   public static boolean happyNumber(int num){
-
-
         int sum = 0;
       while (num != 0) {
           sum += (num % 10) * (num % 10); // 123 %10 = 3, 12 % 10 = 2, 1 % 10 = 1 ..... 3+2+1 = 6
           num = num / 10;  // 123 / 10 = 12, 12/10 = 1
       }
 
-
       int result = 0;
-
       if (sum == 1){
           return true;
       }
-
-
-
-
-
-
-
         return true;
   }
 
+  //solution 2
 
-
-
-
-
+    public static boolean isHappy2(int n) {
+        Set<Integer> alreadyVisited = new HashSet<>();
+        while(n !=1 && !alreadyVisited.contains(n)){
+            alreadyVisited.add(n);
+            int sum = 0;
+            while (n !=0){
+                int digit = n%10;
+                sum = sum + (digit * digit);
+                n = n /10;
+            }
+            n =sum;
+        }
+        return n ==1 ;
+    }
 }
