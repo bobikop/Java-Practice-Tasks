@@ -21,7 +21,6 @@ public class BiggestSubstring {
                 if (eachCharacter.length()> longestSubstring.length()){
                     longestSubstring = eachCharacter;
                 }
-
                 eachCharacter = "";
             }
         }
