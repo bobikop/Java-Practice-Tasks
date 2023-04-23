@@ -5,6 +5,7 @@ public class Number_Armstrong {
 
     /*
     Write a method that can check if a number is Armstrong number
+    Armstrong number is an number from which sum of each digits cube value is eaual to number itself
      */
 
     public static boolean isArmStrongNumber(int num) {
@@ -17,6 +18,7 @@ public class Number_Armstrong {
         }
 
         return (c == b) ? true : false;
+
     }
 
 
