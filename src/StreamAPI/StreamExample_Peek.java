@@ -9,9 +9,8 @@ public class StreamExample_Peek {
 
 
     public static void main(String[] args) {
-
         List<String> roles = Stream.of("Admin", "Manager", "Employee")
-                .filter(obj -> obj.equals("Admin"))
+                .filter(obj -> obj.equals("Manager"))
 //                .filter(obj ->{
 //                    System.out.println("Printing" + " " + obj);
 //                    return obj.equals("Admin");
