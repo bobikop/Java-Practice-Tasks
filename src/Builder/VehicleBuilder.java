@@ -18,6 +18,7 @@ public class VehicleBuilder {
     }
 
 
+    // create method for each property so we can create our object with any argument we need
     public VehicleBuilder name( String name){
         this.name = name;
         return this;
