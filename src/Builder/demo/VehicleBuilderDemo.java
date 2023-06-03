@@ -33,6 +33,7 @@ public class VehicleBuilderDemo {
         System.out.println("This is my vehicle" + myVehicle);
         System.out.println("This is my vehicle" + bike);
 
+        // by using builder() method we can create our object with all or particular argument. With standard contructor and without builder() we must use all constructor arguments when create new object
 
     }
 }
