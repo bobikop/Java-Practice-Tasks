@@ -37,3 +37,6 @@ public class VehicleBuilderDemo {
 
     }
 }
+
+
+// With @Builder annotation we can have whole builder set up managed by java
