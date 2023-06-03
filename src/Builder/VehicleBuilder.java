@@ -10,7 +10,8 @@ public class VehicleBuilder {
 
 
     public Vehicle build(){
-        // we can validate
+        // we can validate here for example crew size
+        //we can validate any of bellow constructors
         if(crew <= 0)
             throw new IllegalStateException("Missing crew members" + crew);
         return new Vehicle(name, crew, fuel, destination, cargo);
