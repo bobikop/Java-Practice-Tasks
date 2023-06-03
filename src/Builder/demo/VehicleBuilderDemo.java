@@ -14,7 +14,7 @@ public class VehicleBuilderDemo {
 
 
 
-        //
+        // Create first vehicle
         Vehicle myVehicle = new VehicleBuilder()
                 .cargo("Bananas")
                 .crew(200)
@@ -23,6 +23,7 @@ public class VehicleBuilderDemo {
                 .build();
 
 
+        // create second vehicle
         Vehicle bike = new VehicleBuilder()
                 .name("Tricikl")
                 .crew(2)
