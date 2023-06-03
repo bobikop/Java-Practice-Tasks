@@ -37,6 +37,7 @@ public class Vehicle {
         return cargo;
     }
 
+    // we need to override toString method in order we can see print in our runner main class
     @Override
     public String toString() {
         return "Vehicle{" +
