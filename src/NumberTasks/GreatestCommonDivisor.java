@@ -22,7 +22,8 @@ public class GreatestCommonDivisor {
         }
 
 
-        // n1 =100, n2 = 75
+        // n1 =100, n2 = 75 in this case for example while loop condition will be always false.
+        // to have while loop running we need to add not (!) operator t the front of the logic statement inside of while loop
 
         while(!(number1 % gcd == 0 && number2 % gcd == 0)){
             gcd--;
