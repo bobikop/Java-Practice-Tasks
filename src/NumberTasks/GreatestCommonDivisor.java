@@ -15,6 +15,13 @@ public class GreatestCommonDivisor {
         number2 = input.nextInt();
 
 
+        if(number1 > number2){
+            gcd = number2;
+        }else{
+            gcd = number1;
+        }
+
+
 
     }
 
