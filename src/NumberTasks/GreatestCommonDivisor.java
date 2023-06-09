@@ -24,10 +24,11 @@ public class GreatestCommonDivisor {
 
         // n1 =100, n2 = 75
 
-        while(number1 % gcd == 0 && number2 % gcd == 0){
+        while(!(number1 % gcd == 0 && number2 % gcd == 0)){
             gcd--;
         }
 
+        System.out.println(gcd);
     }
 
 }
