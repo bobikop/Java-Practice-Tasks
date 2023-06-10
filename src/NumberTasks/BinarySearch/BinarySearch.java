@@ -15,8 +15,6 @@ public class BinarySearch {
         System.out.println( Arrays.binarySearch(ints, 9));
 
     }
-
-
     private static int binarySearch(int[] numbers, int numberToFind){
 
         int low = 0;
@@ -35,9 +33,7 @@ public class BinarySearch {
                 low = middlePosition + 1;
             }
         }
-
         return -1;
-
     }
 
 }
