@@ -31,7 +31,7 @@ public class AddingToSum {
 
 
         System.out.println(pairs);
-//test comment hereetu jetu
+
     }
 
 }
