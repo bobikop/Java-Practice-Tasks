@@ -3,7 +3,7 @@ package NumberTasks.BinarySearch;
 import java.util.Arrays;
 
 public class BinarySearch {
-	// testing message here
+	
 
     // find if the element is present in the sorted array        
 
