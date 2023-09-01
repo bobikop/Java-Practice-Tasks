@@ -5,7 +5,7 @@ import java.util.Arrays;
 public class BinarySearch {
 	// testing message here
 
-    // find if the element is present in the sorted array
+    // find if the element is present in the sorted array        
 
     public static void main(String[] args) {
         int[] ints = {1,2,3,4,5,6,7,9,11};
