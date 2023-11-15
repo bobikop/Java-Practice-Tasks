@@ -1,0 +1,627 @@
+-- This PNR generator was created on 8/10/2023 based on program ej_tests/sql/2023/crossing_problem/crossing_problem_test.sql
+-- This program generates test data to test the new Reservation.hasDuplicateBookings condition.
+declare
+  -- Utilities
+  function parse_date(date_str in varchar2)
+  return date is
+  begin
+    return to_date(date_str, 'MM/DD/YYYY HH24:MI');
+  end;
+
+  function format_time_min(time in date)
+ return varchar2 is
+  begin
+    return to_char(time, 'MM/DD/YYYY HH24:MI');
+  end;
+
+  function format_time_sec(time in date)
+  return varchar2 is
+  begin
+    return to_char(time, 'MM/DD/YYYY HH24:MI:SS');
+  end;
+
+  function format_last_processing_time(last_processing_time_str in varchar2)
+    return varchar2 is
+    last_processing_time date;
+  begin
+    last_processing_time := to_date(last_processing_time_str, 'YYYYMMDD:HH24MISS');
+    return to_char(last_processing_time, 'MM/DD/YYYY HH24:MI:SS');
+  end;
+
+  function get_current_time return date is
+    current_time date;
+  begin
+    select sysdate
+      into current_time
+      from dual;
+
+    return current_time;
+  end;
+
+  function add_minutes(reference_time in date,
+                        minutes in number) return date is
+    new_time date;
+  begin
+    select reference_time + ((minutes/60) * (1/24));
+      into new_time
+      from dual;
+
+    return new_time;
+  end;
+
+-- Suppose that reference_time '3/1/2015 14:30' , days = 5
+-- and time_of_day_str= '10:18'
+-- reference_time = TO_DATE('3/1/2015 14:30', 'MM/DD/YYYY HH24:MI')
+-- Function add_days would return '3/6/2015 10:18'
+
+
+function add_days(reference_time in date,
+                  days in number,
+                  time_of_day_str in varchar2) return date is
+    new_time date;
+    new_time_str varchar2(100);
+begin
+    new_time := add_days(reference_time, days;
+    new_time_str := to_char(new_time, 'MM/DD/YYYY') || time_of_day_str;
+    return parse_date(new_time_str);
+end;
+
+procedure add_minutes_test is
+    current_time date;
+    new_time date;
+begin
+    current_time := get_current_time;
+    new_time := add_minutes(current_time, -5);
+
+    dbms_output.put_line(chr(10) || 'Current time: ' || format_time_min(current_time));
+    dbms_output.put_line('New time: ' || format_time_min(new_time));
+end;
+
+procedure add_days_test is
+    current_time date;
+    new_time date;
+begin
+    current_time := get_current_time;
+    new_time := add_days(current_time, 5);
+
+    dbms_output.put_line(chr(10) || 'Current time: ' || format_time_min(current_time));
+    dbms_output.put_line('New time: ' || format_time_min(new_time));
+end;
+
+procedure add_days3_test is
+    current_time date;
+    new_time date;
+begin
+    current_time := get_current_time;
+    new_time := add_days(current_time, 5, '10:18');
+
+    dbms_output.put_line(chr(10) || 'Current time: ' || format_time_min(current_time));
+    dbms_output.put_line('New time: ' || format_time_min(new_time));
+end;
+
+procedure time_test is
+begin
+    -- add minutes test;
+    -- add days test;
+    add_days3_test;
+end;
+
+procedure write_line(line in varchar2) is
+begin
+    dbms_output.put_line(chr(10) || line);
+end;
+
+-- ***  PNR routines ***
+function get_new_pnr_id return number is
+    pnr_id_var number;
+begin
+    select PNR_ID_NBR_SEQ.nextval
+      into pnr_id_var
+      from dual;
+
+    return pnr_id_var;
+end;
+
+function get_new_nm_dob_id return number is
+begin
+    -- Table pnr_nm_dob uses the the same sequence generator as table pnr.
+    return get_new_pnr_id();
+end;
+
+function get_new_flit_leg_id return number is
+begin
+    -- Table flit_leg uses the the same sequence generator as table pnr.
+    return get_new_pnr_id();
+end;
+
+procedure show_new_pnr_id is
+begin
+   dbms_output.put_line(cgr(10) || 'New PNR ID: ' || get_new_pnr_id());
+end;
+
+ procedure create_base_pnr(pnr_id_var in number,
+                            crte_dttm_var in date) is
+ begin
+   insert
+     into pnr (
+           ID_NBR,
+           PNR_RCRD_LOC_NBR,
+           ARLNE_CARR_CD,
+           ARLNE_PNR_CRTE_DT,
+           PNR_TYPE_CODE,
+           CRTE_DTTM,
+           CRTE_USR_ID_CD)
+     values (
+           pnr_id_var,
+           'XYZ123',
+           'UA',
+           trunc(crte_dttm_var),
+           'H',
+           crte_dttm_var,
+           'TEST');
+   end;
+
+-- Procedure to create a base PNR
+procedure create_base_pnr(pnr_id_var in number, crte_dttm_str_var in varchar2) is
+    crte_dttm_var date := parse_date(crte_dttm_str_var);
+begin
+    create_base_pnr(pnr_id_var, crte_dttm_str_var);
+end;
+
+-- Procedure to add a leg
+procedure add_leg(pnr_id_var in number,
+                dprtr_arprt_cd_var in varchar2,
+                schdld_dprtr_dttm_var in date,
+                arvl_arprt_cd_var in varchar2,
+                schdld_arvl_dttm_var in date) is
+    crte_dttm_var date;
+    crte_usr_id_cd_var varchar2(8);
+    flit_leg_id_var number := get_new_flit_leg_id();
+begin
+    select crte_dttm,
+           crte_usr_id_cd
+      into crte_dttm_var,
+           crte_usr_id_cd_var
+      from pnr
+      where id_nbr = pnr_id_var;
+
+    insert
+       into psngr_flit_leg_rel (
+            PSNGR_DETL_ID_NBR,
+            FLIT_LEG_ID_NBR,
+            FLIT_LEG_NBR,
+            CRTE_DTTM,
+            CRTE_USR_ID_CD)
+    values (
+            pnr_id_var,
+            flit_leg_id_var,
+            '0 ',
+            crte_dttm_var,
+            crte_usr_id_cd_var);
+
+    insert
+      into flit_leg (
+        ID_NBR,
+        ARLNE_CARR_CD,
+        FLIT_NBR,
+        DPRTR_ARPRT_CD,
+        DPRTR_DT,
+        DPRTR_TM,
+        CRTE_DTTM,
+        CRTE_USR_ID_CD,
+        SCHDLD_DPRTR_DTTM,
+        ARVL_ARPRT_CD,
+        SCHDLD_ARVL_DTTM,
+        ARVL_DT,
+        ARVL_TM)
+    values (
+        flit_leg_id_var,
+        'AA',
+        '123',
+        dprtr_arprt_cd_var,
+        trunc(schdld_dprtr_dttm_var),
+        to_char(schdld_dprtr_dttm_var, 'HH24MI'),
+        crte_dttm_var,
+        crte_usr_id_cd_var,
+        schdld_dprtr_dttm_var,
+        arvl_arprt_cd_var,
+        schdld_arvl_dttm_var,
+        trunc(schdld_arvl_dttm_var),
+        to_char(schdld_arvl_dttm_var, 'HH24MI'))
+end;
+
+procedure add_pnr_nm_dob(pnr_id_var in number,
+                         frst_nm_var in varchar2,
+                         lst_nm_var in varchar2,
+                         dob_var in varchar2) is
+    crte_dttm_var date;
+    pnr_nm_dob_id_var number := get_new_nm_dob_id();
+begin
+    select crte_dttm
+    into crte_dttm_var
+    from pnr
+    where id_nbr = pnr_id_var;
+
+    insert
+      into pnr_nm_dob (
+        ID_NBR,
+        PNR_ID_NBR,
+        LST_NM,
+        FRST_NM,
+        PSBL_DOB_DT,
+        CRTE_DTTM)
+    values (
+        pnr_nm_dob_id_var,
+        pnr_id_var,
+        frst_nm_var,
+        lst_nm_var,
+        dob_var,
+        crte_dttm_var);
+end;
+
+procedure delete_pnr(pnr_id_var in number) is
+begin
+    delete
+    from flit_leg
+    where id_nbr in
+    (select FLIT_LEG_ID_NBR
+        from psngr_flit_leg_rel
+        where PSNGR_DETL_ID_NBR = pnr_id_var);
+
+       delete
+         from psngr_flit_leg_rel
+         where PSNGR_DETL_ID_NBR = pnr_id_var;
+
+       delete
+         from rul_evnt_evltn
+         where evnt_tbl_nm = 'PNR'
+         and evnt_id_nbr = pnr_id_var;
+
+       delete
+         from rul_evnt_evltn
+         where evnt_tbl_nm = 'PNR NM DOB'
+         and evnt_id_nbr in
+                  (select id_nbr
+                  from pnr_nm_dob
+                  where pnr_id_nbr = pnr_id_var);
+
+       delete
+         from obj_id_findg
+         where srce_tbl_1_nm = 'PNR'
+         and srce_tbl_1_id_nbr = pnr_id_var;
+
+       delete
+         from pnr_nm_dob
+         where pnr_id_nbr = pnr_id_var;
+
+       delete
+         from pnr where id_nbr = pnr_id_var;
+
+end;
+
+--------APIS routines ----------
+procedure create_base_apis (apis_id_var in varchar2,
+                                              site_id_cd_var in varchar2,
+                                              apis_flit_id_var in varchar2,
+                                              frst_nm_var in varchar2,
+                                              last_nm_var in varchar2,
+                                              orgnl_dob_dt_var in varchar2,
+                                              crte_lodr_dttm_var in date) is
+begin
+    insert
+    into apis_psngr (
+         TECS_ID_NBR,
+         SITE_ID_CD,
+         FLIT_TECS_ID_NBR,
+         FRST_NM,
+         LST_NM,
+         DOB_DT,
+         ORGNL_DOB_DT,
+         PSNGR_STUS_CD,
+         CNFRM_STUS_IND,
+         CRTE_LODR_DTTM,
+         UPD_LODR_PRCS_DTTM)
+    VALUES (apis_id_var,
+            site_id_cd_var,
+            apis_flit_id_var,
+            frst_nm_var,
+            last_nm_var,
+            to_date(orgnl_dob_dt_var, 'YYYYMMDD'),
+            orgnl_dob_dt_var,
+            'OBD',
+            '1',
+            crte_lodr_dttm_var,
+            crte_lodr_dttm_var);
+end;
+
+procedure add_flight(apis_flit_id_var in varchar2,
+                                       site_id_cd_var in varchar2,
+                                       departure_port_var in varchar2,
+                                       departure_country_var in varchar2,
+                                       departure_date_var in varchar2,
+                                       departure_time_var in varchar2,
+                                       arrival_port_var in varchar2,
+                                       arrival_country_var in varchar2,
+                                       arrival_date_var in varchar2,
+                                       arrival_time_var in varchar2,
+                                       inbound_outbound_ind_var in varchar2,
+                                       crte_lodr_dttm_var in date) is
+    begin
+       insert
+         into ats_p_apis_FLIT (
+              TECS_ID_NBR,
+              SITE_ID_CD,
+              ETA_DT,
+              ORGNL_LV_ARPRT_CD,
+              ORGNL_LV_CTRY_CD,
+              ORGNL_LV_DT,
+              ORGNL_LV_TM,
+              FINL_ARVL_ARPRT_CD,
+              FINL_ARVL_CTRY_CD,
+              FINL_ARVL_DT,
+              FINL_ARVL_TM,
+              INBUND_OTBUND_IND,
+              CRTE_LODR_DTTM,
+              UPD_LODR_PRCS_DTTM)
+       values (
+              apis_flit_id_var,
+              site_id_cd_var,
+              to_date(arrival_date_var || ' ' || arrival_time_var, 'YYYYMMDD HH24MI'),
+              departure_port_var,
+              departure_country_var,
+              departure_date_var,
+              departure_time_var,
+              arrival_port_var,
+              arrival_country_var,
+              arrival_date_var,
+              arrival_time_var,
+              inbound_outbound_ind_var,
+              crte_lodr_dttm_var,
+              crte_lodr_dttm_var;
+ insert
+   into apis_flit_cnt (
+        FLIT_TESCS_ID_NBR,
+        RVWD_IND,
+        CRTE_LODR_DTTM,
+        UPD_LODR_PRCS_DTTM)
+ values (
+        apis_flit_id_var,
+        'N',
+        crte_lodr_dttm_var,
+        crte_lodr_dttm_var);
+ end;
+
+procedure add_apis_doc (apis_id_var in varchar2,
+                        seq_nbr_var in number,
+                        doc_typ_cd_var in varchar2,
+                        doc_ctry_cd_var in varchar2,
+                        doc_id_nbr_var in varchar2,
+                        crte_lodr_dttm_var in date) is
+begin
+    insert
+        into apis_psngr_doc (
+        PSNGR TECS ID NBR,
+        SEQ_NBR,
+        DOC_TYP_CD,
+        DOC_CTRY_CD,
+        DOC_ID_NBR,
+        CRTE_LODR_DTTM,
+        UPD_LODR_PRCS_DTTM)
+values (
+    apis_id_var,
+    seq_nbr_var,
+    doc_typ_cd_var,
+    doc_ctry_cd_var,
+    doc_id_nbr_var,
+    crte_lodr_dttm_var,
+    crte_lodr_dttm_var;
+end;
+procedure delete_apis (apis_id_var in varchar) is
+begin
+   delete
+      from ats p.apis flit af
+      where af.tecs id nbr in
+              (select ap.flit tecs id nbr
+              from apis psngr ap
+              where ap.tecs id nbr = apis id var);
+   delete
+      from apis flit cnt afc
+      where afc.flit tecs id nbr in
+           (select ap.flit tecs id nbr
+           from apis psngr ap
+           where ap.tecs id nbr = apis id var);
+
+   -- Delete records from uniq_prsn
+   delete
+    from uniq_prsn up
+   where up.id_nbr IN
+       (select us.uniq_id_nbr
+       FROM uniq_srce us
+       WHERE us.srce_tbl_nm = 'APIS PSNGR'
+       AND us.srce_tbl_pkey_txt = apis_id_var);
+   delete
+   from uniq_prs up
+   where up.is_nbr in
+          (select us.uniq_id_nbr
+          from uniq_srce us
+          where us.srce_tbl_nm = 'APIS_PSNGR'
+          and us.srce_tbl_pkey_txt = apis_id_var);
+
+   delete
+   from uniq_srce
+   WHERE srce_tbl_nm = 'APIS PSNGR'
+   AND srce_tbl_pkey_txt = apis_id_var;
+
+   -- Delete records from apis_psngr_doc
+   delete
+   from apis_psngr_doc
+   where PSNGR_TECS_ID_NBR = apis_id_var;
+
+   -- Delete records from tecs_phc
+   delete
+   from tecs_phc
+   where tecs_id_nbr = apis_id_var;
+
+   -- Delete records from apis_psngr
+   delete
+   from apis_psngr
+   where tecs_id_nbr = apis_id_var;
+
+   -- TECS PHC routines --
+   function get_new_phc_id return number is
+       phc_id_var number;
+   begin
+       select PHC_SEQ.nextval
+       into phc_id_var
+       from dual;
+
+       return phc_id_var;
+   end;
+
+procedure create_tecs_phe(tecs_id_var in varchar2,
+                          crsg_dttm_var in date,
+                          frst_nm_var in varchar2,
+                          lst_nm_var in varchar2,
+                          dob_var in varchar2,
+                          doc_typ_cd_var in varchar2,
+                          doc_ctry_cd_var in varchar2,
+                          doc_id_nbr_var in varchar2,
+                          crte_lodr_dttm_var in date) is
+    phc_id_var number := get_new_phe_id();
+begin
+    insert
+    into tecs_phc (
+        PHC_ID_NBR,
+        TECS_ID_NBR,
+        CRSG_DTTM,
+        FRST_NM,
+        LST_NM,
+        DOB,
+        DOC_TYP_CD,
+        DOC_CTRY_CD,
+        DOC_ID_NBR,
+        UPD_LDDR_PRCS_DTTM)
+    values (
+        phe_id_var,
+        tecs_id_var,
+        crsg_dttm_var,
+        frst_nm_var,
+        lst_nm_var,
+        dob_var,
+        doc_typ_cd_var,
+        doc_ctry_cd_var,
+        doc_id_nbr_var,
+        crte_lodr_dttm_var);
+end;
+
+--- *** Delete rul finding *** ---
+PROCEDURE delete_rul_findg(rul_id_var IN NUMBER) is
+begin
+    write_line('Deleting rule finding ' || rul_id_var);
+
+    DELETE
+    FROM rul_findg_efct rfe
+    WHERE rfe.rul_findg_id IN (
+        SELECT rf.rul_findg_id
+        FROM rul_findg rf
+        WHERE rf.rul_id = rul_id_var);
+
+    DELETE
+      FROM rul_findg
+      WHERE rul_id = rul_id_var;
+END;
+
+-- New Procedure to create a PNR record with checked bags and get the PNR ID
+  PROCEDURE create_pnr_with_checked_bags_and_get_pnr_id IS
+    pr_id NUMBER;
+    crte_dttm DATE;
+    bag_count NUMBER;
+    bag_weight NUMBER;
+    bag_weight_uom_cd VARCHAR2(10);
+  BEGIN
+    -- Generate a new PNR ID
+    pr_id := get_new_pnr_id();
+
+    -- Get the current date and time
+    crte_dttm := get_current_time();
+
+    -- Insert a record into PNR_DCS
+    bag_count := 2; -- Change the bag count as needed
+    bag_weight := 50; -- Change the bag weight as needed
+    bag_weight_uom_cd := 'KG'; -- Change the unit of measurement as needed (e.g., 'Lb')
+
+    -- Insert the PNR_DCS record
+    INSERT
+    INTO PNR_DCS (
+         PNR_ID_NBR,
+         BAG_CNT,
+         BAG_WGT,
+         BAG_WGT_UOM_CD)
+    VALUES (
+         pr_id,
+         bag_count,
+         bag_weight,
+         bag_weight_uom_cd);
+
+    -- Create the base PNR record
+    create_base_pnr(pr_id, crte_dttm);
+end;
+
+
+
+-- Procedure to add baggage information
+procedure add_baggage(pnr_id_var in number, weight_in_kg in number) is
+begin
+    insert into pnr_baggage (PNR_ID_NBR, WEIGHT_KG)
+    values (pnr_id_var, weight_in_kg);
+end;
+
+
+-- ********* Test Records  ********
+-- Define the necessary procedures
+
+procedure create_pnr_p1 is
+  pr_id NUMBER := 50713822;
+  crte_dttm date;
+  upd_dttm date;
+begin
+  write_line('Creating PNR p1');
+
+  delete_pr(pr_id);
+
+  -- Get the current date and time
+  crte_dttm := get_current_time();
+  create_base_pnr(pr_id, crte_dttm);
+  add_pnr_nm_dob(pr_id, 'JOHN', 'SMITH', '19850506');
+  add_pnr_nm_dob(pr_id, 'SUSAN', 'SMITH', '19900910');
+
+
+  add_leg(pr_id,
+   'JFK',
+    add_days(crte_dttm, 5, '14:00'),
+   'CDG',
+    add_days(crte_dttm, 5, '21:00'));
+  add_leg(pr_id,
+   'CDG',
+    add_days(crte_dttm, 15, '10:30'),
+   'JFK', add_days(crte_dttm, 15, '17:30'));
+END;
+
+
+
+
+begin
+show_new_pnr_id();
+--delete_rul_findg(8227652);
+
+  create_pnr_p1();
+--create_pnr_p2();
+
+commit;
+dbms_output.put_line(ch(10) || 'Processing complete');
+end;
+/
+
+
+
+
