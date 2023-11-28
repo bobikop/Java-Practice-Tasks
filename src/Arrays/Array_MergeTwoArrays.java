@@ -7,6 +7,7 @@ public class Array_MergeTwoArrays {
 
          /*
     Write a return method that can concat two arrays
+    This method should print elements of first array and then elements of another array as one new single array
      */
 
 
